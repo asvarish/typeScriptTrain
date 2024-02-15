@@ -1,55 +1,41 @@
 import Note from "../model/Note";
 import {NoteRepo} from "../repository/NoteRepo";
-import express, { Request, Response} from 'express';
-import {string} from "zod";
+import {Request, Response} from 'express';
+import { HTTP_STATUS, RESPONSE_MESSAGES} from "../../constants";
+import {ApiOperationGet, SwaggerDefinitionConstant} from "swagger-express-ts";
 
-interface IPostParams {
-    name: string,
-    content: string,
-}
+//import {caller} from "swagger-jsdoc";
+
+
 
 class NoteController {
 
-    async create(req: Request, res: Response) {
+    async create(req: Request, res: Response): Promise<void> {
         try {
             if (!req.body.name || !req.body.content){
-                return res.status(400).json({
-                    status: "bad request",
-                    message: "problem with name or description"
-                })
+                 res.status(HTTP_STATUS.BAD_REQUEST).json(RESPONSE_MESSAGES.BAD_REQUEST)
             }
             const new_note = new Note();
             new_note.name = req.body.name;
             new_note.content = req.body.content;
             new_note.userId! = parseInt(req.body.userId);
-            console.log(parseInt(req.body.userId));
-
 
             await new NoteRepo().save(new_note)
 
-            res.status(200).json({
-                status: "created!",
-                message: "Successfully created note"
-            })
+            res.status(HTTP_STATUS.CREATED).json(RESPONSE_MESSAGES.SUCCESSFULLY_CREATED("note"))
 
-        } catch (err) {
-            console.log(err);
-            res.status(500).json({
-                status: "Internal Server Error!",
-                message: "Internal Server Error!"
-            })
+        } catch (error) {
+            res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json(RESPONSE_MESSAGES.INTERNAL_SERVER_ERROR)
         }
     }
 
-    async update(req: Request, res: Response) {
+    async update(req: Request, res: Response): Promise<void> {
         try {
-            const new_note = new Note();
-            if (!req.body) {
-                res.status(400).json({
-                    status: "empty",
-                    message: "huempty"
-                })
+
+            if (!req.body || !parseInt(req.params["id"])) {
+                 res.status(HTTP_STATUS.BAD_REQUEST).json(RESPONSE_MESSAGES.BAD_REQUEST)
             }
+            const new_note = await new NoteRepo().retrieveById(parseInt(req.params["id"]));
 
             if (req.body.name) {
                 new_note.name = req.body.name;
@@ -59,45 +45,34 @@ class NoteController {
                 new_note.content = req.body.content;
             }
 
-            if (req.params["id"]) {
-                new_note.id = parseInt(req.params["id"]);
-            }
+            new_note.id = parseInt(req.params["id"]);
 
             await new NoteRepo().update(new_note)
 
-            res.status(201).json({
-                status: "created!",
-                message: "Successfully created note"
-            })
+            res.status(HTTP_STATUS.OK).json(RESPONSE_MESSAGES.SUCCESSFULLY_UPDATED("note"));
 
-        } catch (err) {
-            res.status(500).json({
-                status: "Internal Server Error!",
-                message: "Internal Server Error!"
-            })
+        } catch (error: any) {
+            if(error.message == "NOTE NOT FOUND") {
+                res.status(HTTP_STATUS.NOT_FOUND).json(RESPONSE_MESSAGES.NOT_FOUND("note to update"))
+            }
+            res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json(RESPONSE_MESSAGES.INTERNAL_SERVER_ERROR)
         }
     }
 
     async delete(req: Request, res: Response) {
         try {
             if (!req.params["id"]) {
-                res.status(400).json({
-                    status: "empty",
-                    message: "huempty"
-                })
+                return res.status(HTTP_STATUS.BAD_REQUEST).json(RESPONSE_MESSAGES.BAD_REQUEST)
             }
             await new NoteRepo().delete(parseInt(req.params["id"]));
 
-            res.status(201).json({
-                status: "created!",
-                message: "Successfully created note"
-            })
+            res.status(HTTP_STATUS.OK).json(RESPONSE_MESSAGES.SUCCESSFULLY_DELETED("note"))
 
-        } catch (err) {
-            res.status(500).json({
-                status: "Internal Server Error!",
-                message: "Internal Server Error!"
-            })
+        } catch (error: any) {
+            if(error.message == "NOTE NOT FOUND") {
+                return res.status(HTTP_STATUS.NOT_FOUND).json(RESPONSE_MESSAGES.NOT_FOUND("note to delete"))
+            }
+            res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json(RESPONSE_MESSAGES.INTERNAL_SERVER_ERROR)
         }
     }
 
@@ -106,23 +81,16 @@ class NoteController {
             const id = parseInt(req.params["id"])
             console.log(req.params["id"])
             if (!id) {
-                res.status(400).json({
-                    status: "empty",
-                    message: "huempty"
-                })
+               return res.status(HTTP_STATUS.BAD_REQUEST).json(RESPONSE_MESSAGES.BAD_REQUEST)
             }
             const data = await new NoteRepo().retrieveById(id);
-            res.status(201).json({
-                status: "created!",
-                message: "Successfully created note",
-                data: data
-            })
+            res.status(HTTP_STATUS.OK).json({...RESPONSE_MESSAGES.SUCCESSFULLY_FOUND("note"), data:data})
 
-        } catch (err) {
-            res.status(500).json({
-                status: "Internal Server Error!",
-                message: "Internal Server Error!"
-            })
+        } catch (error: any) {
+            if(error.message == "NOTE NOT FOUND") {
+                return res.status(HTTP_STATUS.NOT_FOUND).json(RESPONSE_MESSAGES.NOT_FOUND("note"))
+            }
+            res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json(RESPONSE_MESSAGES.INTERNAL_SERVER_ERROR)
         }
     }
 
@@ -130,44 +98,14 @@ class NoteController {
         try {
             const data = await new NoteRepo().retrieveALL();
 
-            res.status(201).json({
-                status: "created!",
-                message: "Successfully created note",
-                data: data
-            })
+            res.status(HTTP_STATUS.OK).json({...RESPONSE_MESSAGES.SUCCESSFULLY_FOUND("notes"), data:data})
 
-        } catch (err) {
-            console.log(err);
-            res.status(500).json({
-                error: err,
-                status: "Internal Server Error!",
-                message: "Internal Server Error!"
-            })
+        } catch (error: any) {
+            if(error.message == "NOTES NOT FOUND") {
+               return res.status(HTTP_STATUS.NOT_FOUND).json(RESPONSE_MESSAGES.NOT_FOUND("notes"))
+            }
+            res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json(RESPONSE_MESSAGES.INTERNAL_SERVER_ERROR)
         }
     }
-        async createGet(req: Request, res: Response) {
-            try {
-                const new_note = new Note();
-                console.log(req.query.name);
-
-                new_note.name = req.query.name as string;
-                new_note.content = req.query.content as string;
-                console.log(new_note.name)
-
-                await new NoteRepo().save(new_note)
-
-                res.status(200).json({
-                    status: "created!",
-                    message: "Successfully created note"
-                })
-
-            } catch (err) {
-                console.log(err);
-                res.status(500).json({
-                    status: "Internal Server Error!",
-                    message: "Internal Server Error!"
-                })
-            }
-        }
 }
 export default new NoteController()

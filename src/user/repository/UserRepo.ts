@@ -18,7 +18,7 @@ export class UserRepo implements IUserRepo {
                 username: user.username
             })
         } catch (error){
-            throw new Error("COULDN'T MAKE A USER")
+            throw error;
         }
 
     }
@@ -75,10 +75,11 @@ export class UserRepo implements IUserRepo {
         try {
             const data = await User.findAll()
             if (data.length == 0) {
-                throw new Error("Юзеров нет")
+                throw new Error("no users found")
             }
             return data;
         } catch (error) {
+
             throw error;
         }
     }

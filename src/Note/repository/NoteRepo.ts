@@ -50,7 +50,7 @@ export class NoteRepo implements INoteRepo {
                 }
             })
             if (!new_note) {
-                throw new Error("нота не найдена")
+                throw new Error("NOTE NOT FOUND")
             }
 
             await new_note.destroy()
@@ -67,7 +67,7 @@ export class NoteRepo implements INoteRepo {
                 }
             })
             if (!new_note) {
-                throw new Error("нота не найдена")
+                throw new Error("NOTE NOT FOUND")
             }
 
             return new_note;
@@ -80,13 +80,13 @@ export class NoteRepo implements INoteRepo {
         try {
             const new_note =  await Note.findAll()
             if (new_note.length == 0) {
-                throw new Error("нот нет!")
+                throw new Error("NOTES NOT FOUND ")
             }
 
             return new_note;
 
         } catch (error) {
-            throw error;
+            throw Error;
         }
 
     }
