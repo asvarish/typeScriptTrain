@@ -1,7 +1,5 @@
 import Note from "../model/Note";
 
-
-
 interface INoteRepo {
     save(note: Note): Promise<void>;
     update(note: Note): Promise<void>;

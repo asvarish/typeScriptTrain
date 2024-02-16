@@ -12,7 +12,6 @@ class Database {
     private POSTGRES_PORT = parseInt(process.env.POSTGRES_PORT!) as number;
     private POSTGRES_PASSWORD = process.env.POSTGRES_PASSWORD as string;
 
-
     constructor() {
         this.connectToPG();
 

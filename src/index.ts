@@ -1,15 +1,9 @@
 import express, {Application} from "express";
 import Database from "./config/database";
-import Note from "./Note/model/Note";
-import {NoteRepo} from "./Note/repository/NoteRepo";
 import NoteRouter from "./router/NoteRouter";
-import UserController from "./user/controller/UserController";
 import UserRouter from "./router/UserRouter";
 import swaggerUi from "swagger-ui-express";
 import swaggerJsdoc from 'swagger-jsdoc';
-
-
-
 
 class App {
     public app : Application;

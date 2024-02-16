@@ -72,8 +72,8 @@ class NoteRouter extends BaseRouter{
          * @swagger
          * /api/v1/note/{id}:
          *   delete:
-         *     summary: удаление записи.
-         *     description: удаляет запись по id.
+         *     summary: Удаление записи.
+         *     description: Удаляет запись по id.
          *     parameters:
          *       - in: path
          *         name: id
@@ -83,7 +83,7 @@ class NoteRouter extends BaseRouter{
          *           type: string
          *     responses:
          *       200:
-         *         description: запись успешно оудалена.
+         *         description: Запись успешно оудалена.
          *       400:
          *         description: Неправильный запрос.
          *       404:
@@ -96,8 +96,8 @@ class NoteRouter extends BaseRouter{
          * @swagger
          * /api/v1/note/{id}:
          *   get:
-         *     summary: поиск записи.
-         *     description: находит запись по id.
+         *     summary: Поиск записи.
+         *     description: Находит запись по id.
          *     parameters:
          *       - in: path
          *         name: id
@@ -107,7 +107,7 @@ class NoteRouter extends BaseRouter{
          *           type: string
          *     responses:
          *       200:
-         *         description: запись успешно найдена.
+         *         description: Запись успешно найдена.
          *       400:
          *         description: Неправильный запрос.
          *       404:
@@ -120,11 +120,11 @@ class NoteRouter extends BaseRouter{
          * @swagger
          * /api/v1/note:
          *   get:
-         *     summary: поиск всех записей.
-         *     description: находит все записи, которые есть.
+         *     summary: Поиск всех записей.
+         *     description: Находит все записи, которые есть.
          *     responses:
          *       200:
-         *         description: все записи успешно найдены.
+         *         description: Все записи успешно найдены.
          *       400:
          *         description: Неправильный запрос.
          *       404:

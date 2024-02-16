@@ -1,10 +1,5 @@
 import {Column, HasMany, DataType, Model, Table} from "sequelize-typescript";
-import {combineTableNames} from "sequelize/types/utils";
 import Note from "../../Note/model/Note";
-
-
-
-
 
 @Table({tableName : User.USER_TABLE_NAME})
 export class User extends Model{

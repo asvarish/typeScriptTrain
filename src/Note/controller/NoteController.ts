@@ -2,11 +2,6 @@ import Note from "../model/Note";
 import {NoteRepo} from "../repository/NoteRepo";
 import {Request, Response} from 'express';
 import { HTTP_STATUS, RESPONSE_MESSAGES} from "../../constants";
-import {ApiOperationGet, SwaggerDefinitionConstant} from "swagger-express-ts";
-
-//import {caller} from "swagger-jsdoc";
-
-
 
 class NoteController {
 

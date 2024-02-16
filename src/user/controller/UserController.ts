@@ -1,8 +1,6 @@
 import user from "../model/User";
 import {UserRepo} from "../repository/UserRepo";
-import express, { Request, Response} from 'express';
-import {NoteRepo} from "../../Note/repository/NoteRepo";
-import {number} from "zod";
+import { Request, Response} from 'express';
 import {HTTP_STATUS, RESPONSE_MESSAGES} from "../../constants";
 
 class UserController {

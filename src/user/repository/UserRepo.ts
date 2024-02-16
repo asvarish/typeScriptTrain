@@ -1,7 +1,5 @@
 import User from "../model/User";
 import Note from "../../Note/model/Note";
-import {undefined} from "zod";
-
 
 interface IUserRepo {
     save(user: User): Promise <void>;

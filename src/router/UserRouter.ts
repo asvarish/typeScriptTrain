@@ -1,7 +1,6 @@
 import BaseRouter from "./BaseRouter";
 import UserController from "../user/controller/UserController";
 
-
 class UserRouter extends BaseRouter{
 
     public routes(){
@@ -34,7 +33,7 @@ class UserRouter extends BaseRouter{
          * @swagger
          * /api/v1/user/{id}:
          *   patch:
-         *     summary: Обновление пользоваетля.
+         *     summary: Обновление пользователя.
          *     description: Обновляет пользоваетля по id на основание данных из тела запроса.
          *     parameters:
          *       - in: path
@@ -67,8 +66,8 @@ class UserRouter extends BaseRouter{
          * @swagger
          * /api/v1/user/{id}:
          *   delete:
-         *     summary: удаление пользователя.
-         *     description: удаляет пользователя по id.
+         *     summary: Удаление пользователя.
+         *     description: Удаляет пользователя по id.
          *     parameters:
          *       - in: path
          *         name: id
@@ -91,8 +90,8 @@ class UserRouter extends BaseRouter{
          * @swagger
          * /api/v1/user/{id}:
          *   get:
-         *     summary: поиск записей пользователя.
-         *     description: находит записи пользователя по id.
+         *     summary: Поиск записей пользователя.
+         *     description: Находит записи пользователя по id.
          *     parameters:
          *       - in: path
          *         name: id
@@ -102,7 +101,7 @@ class UserRouter extends BaseRouter{
          *           type: string
          *     responses:
          *       200:
-         *         description: записи пользователя успешно найдены.
+         *         description: Записи пользователя успешно найдены.
          *       400:
          *         description: Неправильный запрос.
          *       404:
@@ -115,11 +114,11 @@ class UserRouter extends BaseRouter{
          * @swagger
          * /api/v1/user:
          *   get:
-         *     summary: поиск всех пользователей.
-         *     description: находит всех пользователей, которые есть.
+         *     summary: Поиск всех пользователей.
+         *     description: Находит всех пользователей, которые есть.
          *     responses:
          *       200:
-         *         description: все пользователи успешно найдены.
+         *         description: Все пользователи успешно найдены.
          *       400:
          *         description: Неправильный запрос.
          *       404:
