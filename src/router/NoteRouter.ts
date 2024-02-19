@@ -2,6 +2,16 @@ import BaseRouter from "./BaseRouter";
 import NoteController from "../Note/controller/NoteController";
 
 class NoteRouter extends BaseRouter{
+   private static instant: NoteRouter;
+
+
+     public static getInstance(): NoteRouter{
+         if (!NoteRouter.instant) {
+             return NoteRouter.instant = new NoteRouter();
+         }
+         return NoteRouter.instant;
+     }
+
     public routes() {
 
         /**
@@ -31,8 +41,7 @@ class NoteRouter extends BaseRouter{
          *       500:
          *         description: Внутренняя ошибка сервера.
          */
-        this.router.post("", NoteController.create)
-
+        this.router.post("", NoteController.create);
         /**
          * @swagger
          * /api/v1/note/{id}:
@@ -67,7 +76,7 @@ class NoteRouter extends BaseRouter{
          *       500:
          *         description: Внутренняя ошибка сервера.
          */
-        this.router.patch("/:id", NoteController.update)
+        this.router.patch("/:id", NoteController.update);
         /**
          * @swagger
          * /api/v1/note/{id}:
@@ -91,7 +100,7 @@ class NoteRouter extends BaseRouter{
          *       500:
          *         description: Внутренняя ошибка сервера.
          */
-        this.router.delete("/:id", NoteController.delete)
+        this.router.delete("/:id", NoteController.delete);
         /**
          * @swagger
          * /api/v1/note/{id}:
@@ -115,7 +124,7 @@ class NoteRouter extends BaseRouter{
          *       500:
          *         description: Внутренняя ошибка сервера.
          */
-        this.router.get("", NoteController.findAll)
+        this.router.get("", NoteController.findAll);
         /**
          * @swagger
          * /api/v1/note:
@@ -132,7 +141,7 @@ class NoteRouter extends BaseRouter{
          *       500:
          *         description: Внутренняя ошибка сервера.
          */
-        this.router.get("/:id", NoteController.findById)
+        this.router.get("/:id", NoteController.findById);
     }
 }
-export default new NoteRouter().router
+export default  NoteRouter.getInstance().router;

@@ -2,6 +2,14 @@ import BaseRouter from "./BaseRouter";
 import UserController from "../user/controller/UserController";
 
 class UserRouter extends BaseRouter{
+    private static instance: UserRouter;
+
+    public static getInstance(): UserRouter {
+        if  (!UserRouter.instance) {
+            return  UserRouter.instance = new UserRouter();
+        }
+        return UserRouter.instance;
+}
 
     public routes(){
         /**
@@ -130,4 +138,4 @@ class UserRouter extends BaseRouter{
 }
 }
 
-export default new UserRouter().router;
+export default UserRouter.getInstance().router;

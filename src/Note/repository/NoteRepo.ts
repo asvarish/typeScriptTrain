@@ -1,6 +1,8 @@
 import Note from "../model/Note";
 
+
 interface INoteRepo {
+
     save(note: Note): Promise<void>;
     update(note: Note): Promise<void>;
     delete(noteid: number): Promise<void>;
@@ -8,7 +10,15 @@ interface INoteRepo {
     retrieveALL(): Promise<Note[]>;
 }
 
-export class NoteRepo implements INoteRepo {
+class NoteRepo implements INoteRepo {
+    private static instance:NoteRepo;
+
+    public static getInstance(){
+        if(!NoteRepo.instance){
+            NoteRepo.instance = new NoteRepo()
+        }
+        return NoteRepo.instance
+    }
     async save(note: Note): Promise<void> {
         try {
         await Note.create({
@@ -76,7 +86,7 @@ export class NoteRepo implements INoteRepo {
     }
     async  retrieveALL(): Promise<Note[]> {
         try {
-            const new_note =  await Note.findAll()
+            const new_note: Note[] =  await Note.findAll()
             if (new_note.length == 0) {
                 throw new Error("NOTES NOT FOUND ")
             }
@@ -89,3 +99,5 @@ export class NoteRepo implements INoteRepo {
 
     }
 }
+
+export default NoteRepo.getInstance()

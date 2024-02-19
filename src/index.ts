@@ -1,9 +1,9 @@
 import express, {Application} from "express";
 import Database from "./config/database";
-import NoteRouter from "./router/NoteRouter";
 import UserRouter from "./router/UserRouter";
+import specs from "./config/swagger";
 import swaggerUi from "swagger-ui-express";
-import swaggerJsdoc from 'swagger-jsdoc';
+import NoteRouter from "./router/NoteRouter";
 
 class App {
     public app : Application;
@@ -27,20 +27,7 @@ class App {
         this.app.route("/").get((req, res)=>{
             res.send("Home")
         })
-        const options = {
-            failOnErrors: true,
-            definition: {
-                openapi: '3.0.0',
-                info: {
-                    title: 'API Documentation',
-                    version: '1.0.0',
-                    description: 'Documentation for my API',
-                },
-            },
-            apis: ["**/*.ts"] // Путь к вашим файлам маршрутов
-        };
 
-        const specs = swaggerJsdoc(options);
         this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
         this.app.use("/api/v1/note",NoteRouter)
         this.app.use("/api/v1/user",UserRouter)

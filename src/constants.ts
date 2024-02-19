@@ -1,5 +1,5 @@
 
-export const HTTP_STATUS = {
+export const HTTP_STATUS = {//todo ENUM
     BAD_REQUEST: 400,
     INTERNAL_SERVER_ERROR:500,
     CREATED:201,

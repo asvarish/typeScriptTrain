@@ -1,9 +1,17 @@
 import Note from "../model/Note";
-import {NoteRepo} from "../repository/NoteRepo";
 import {Request, Response} from 'express';
-import { HTTP_STATUS, RESPONSE_MESSAGES} from "../../constants";
+import {HTTP_STATUS, RESPONSE_MESSAGES} from "../../constants";
+import NoteRepo from "../repository/NoteRepo";
 
 class NoteController {
+     public static instance:NoteController
+
+     public static getInstance() {
+         if(!NoteController.instance){
+             return NoteController.instance = new NoteController()
+         }
+         return NoteController.instance
+     }
 
     async create(req: Request, res: Response): Promise<void> {
         try {
@@ -15,7 +23,7 @@ class NoteController {
             new_note.content = req.body.content;
             new_note.userId! = parseInt(req.body.userId);
 
-            await new NoteRepo().save(new_note)
+            await NoteRepo.save(new_note)//todo singleton
 
             res.status(HTTP_STATUS.CREATED).json(RESPONSE_MESSAGES.SUCCESSFULLY_CREATED("note"))
 
@@ -30,7 +38,7 @@ class NoteController {
             if (!req.body || !parseInt(req.params["id"])) {
                  res.status(HTTP_STATUS.BAD_REQUEST).json(RESPONSE_MESSAGES.BAD_REQUEST)
             }
-            const new_note = await new NoteRepo().retrieveById(parseInt(req.params["id"]));
+            const new_note = await NoteRepo.retrieveById(parseInt(req.params["id"]));
 
             if (req.body.name) {
                 new_note.name = req.body.name;
@@ -42,7 +50,7 @@ class NoteController {
 
             new_note.id = parseInt(req.params["id"]);
 
-            await new NoteRepo().update(new_note)
+            await NoteRepo.update(new_note)
 
             res.status(HTTP_STATUS.OK).json(RESPONSE_MESSAGES.SUCCESSFULLY_UPDATED("note"));
 
@@ -59,7 +67,7 @@ class NoteController {
             if (!req.params["id"]) {
                 return res.status(HTTP_STATUS.BAD_REQUEST).json(RESPONSE_MESSAGES.BAD_REQUEST)
             }
-            await new NoteRepo().delete(parseInt(req.params["id"]));
+            await NoteRepo.delete(parseInt(req.params["id"]));
 
             res.status(HTTP_STATUS.OK).json(RESPONSE_MESSAGES.SUCCESSFULLY_DELETED("note"))
 
@@ -71,14 +79,14 @@ class NoteController {
         }
     }
 
-    async findById(req: Request, res: Response) {
+     async findById(req: Request, res: Response) {
         try {
             const id = parseInt(req.params["id"])
             console.log(req.params["id"])
             if (!id) {
                return res.status(HTTP_STATUS.BAD_REQUEST).json(RESPONSE_MESSAGES.BAD_REQUEST)
             }
-            const data = await new NoteRepo().retrieveById(id);
+            const data = await NoteRepo.retrieveById(id);
             res.status(HTTP_STATUS.OK).json({...RESPONSE_MESSAGES.SUCCESSFULLY_FOUND("note"), data:data})
 
         } catch (error: any) {
@@ -91,7 +99,7 @@ class NoteController {
 
     async findAll(req: Request, res: Response) {
         try {
-            const data = await new NoteRepo().retrieveALL();
+            const data: Note[] = await NoteRepo.retrieveALL();
 
             res.status(HTTP_STATUS.OK).json({...RESPONSE_MESSAGES.SUCCESSFULLY_FOUND("notes"), data:data})
 
@@ -103,4 +111,4 @@ class NoteController {
         }
     }
 }
-export default new NoteController()
+export default  NoteController.getInstance()

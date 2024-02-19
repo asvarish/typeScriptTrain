@@ -7,9 +7,19 @@ interface IUserRepo {
     delete(userID: number): Promise <void>;
     findNotesByUser(userID: number): Promise <Note[]>;
     getAll(): Promise <User[]>
+
 }
 
-export class UserRepo implements IUserRepo {
+class UserRepo implements IUserRepo {
+
+    private static instance: UserRepo;
+
+    public static getInstance():UserRepo{
+        if(!UserRepo.instance){
+            UserRepo.instance = new UserRepo();
+        }
+        return UserRepo.instance
+    }
     async save(user: User): Promise<void> {
         try{
             await User.create({
@@ -82,3 +92,5 @@ export class UserRepo implements IUserRepo {
         }
     }
 }
+
+export default UserRepo.getInstance();

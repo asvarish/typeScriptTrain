@@ -1,9 +1,18 @@
 import user from "../model/User";
-import {UserRepo} from "../repository/UserRepo";
-import { Request, Response} from 'express';
+import {Request, Response} from 'express';
 import {HTTP_STATUS, RESPONSE_MESSAGES} from "../../constants";
+import UserRepo from "../repository/UserRepo";
 
 class UserController {
+
+    private static instance:UserController;
+
+    public static getInstance():UserController{
+        if (!UserController.instance){
+            UserController.instance = new UserController();
+        }
+        return UserController.instance;
+    }
     async create(req: Request, res: Response) {
         try {
             if (!req.body.username) {
@@ -13,7 +22,7 @@ class UserController {
             new_user.id = req.body.id;
             new_user.username = req.body.username;
             console.log(req.body.username)
-            await new UserRepo().save(new_user)
+            await UserRepo.save(new_user)
             res.status(HTTP_STATUS.CREATED).json(RESPONSE_MESSAGES.SUCCESSFULLY_CREATED("user"))
         } catch (error) {
             console.log(error);
@@ -26,7 +35,7 @@ class UserController {
             if (!req.params["id"]) {
                 return res.status(HTTP_STATUS.BAD_REQUEST).json(RESPONSE_MESSAGES.BAD_REQUEST)
             }
-            const data = await new UserRepo().findNotesByUser(parseInt(req.params["id"]))
+            const data = await UserRepo.findNotesByUser(parseInt(req.params["id"]))
             res.status(HTTP_STATUS.OK).json({...RESPONSE_MESSAGES.SUCCESSFULLY_FOUND("all notes by user"), username: data[0].name, data: data})
         } catch (error :any) {
             if (error.message == "User doesn't have any notes"){
@@ -42,7 +51,7 @@ class UserController {
             if (!req.params["id"]) {
                 return res.status(HTTP_STATUS.BAD_REQUEST).json(RESPONSE_MESSAGES.BAD_REQUEST)
             }
-            await new UserRepo().delete(parseInt(req.params["id"]))
+            await UserRepo.delete(parseInt(req.params["id"]))
             res.status(HTTP_STATUS.OK).json(RESPONSE_MESSAGES.SUCCESSFULLY_DELETED("user"))
         } catch (error: any) {
             if (error.message == "user not found"){
@@ -64,7 +73,7 @@ class UserController {
             const new_user = new user();
             new_user.username = req.body.username;
             new_user.id = parseInt(req.params["id"]);
-            await new UserRepo().update(new_user)
+            await UserRepo.update(new_user)
             return res.status(HTTP_STATUS.OK).json(RESPONSE_MESSAGES.SUCCESSFULLY_UPDATED("user"))
         } catch (error: any) {
             if (error.message =="user not found"){
@@ -76,7 +85,7 @@ class UserController {
 
     async getAll(req: Request, res: Response){
         try{
-            const data = await new UserRepo().getAll()
+            const data = await UserRepo.getAll()
             return res.status(HTTP_STATUS.OK).json({...RESPONSE_MESSAGES.SUCCESSFULLY_FOUND("Users"), data:data})
         }   catch (error: any) {
             if (error.message =="no users found"){
@@ -86,4 +95,4 @@ class UserController {
         }
     }
 }
-export default new UserController()
+export default UserController.getInstance();
